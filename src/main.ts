@@ -3,7 +3,9 @@ import { Telegraf, Context } from 'telegraf';
 
 import "reflect-metadata";
 import {DataSource} from "typeorm";
-import {User} from "./dbtypes/User";
+import 'reflect-metadata';
+
+import { User } from "./dbtypes/User";
 
 
 import { handleMessage } from './messageHandler';
@@ -18,12 +20,14 @@ const connectionString = process.env.NEON_CONNECTION_STRING as string;
 
 let dataSource: DataSource;
 let connection: any;
+
 async function createDatabaseConnection() {
   try {
-      dataSource = new DataSource({
-          type: 'postgres', // Switching from 'better-sqlite3' to 'postgres'
-          url: connectionString,
-      });
+    dataSource = new DataSource({
+      type: 'postgres', // Switching from 'better-sqlite3' to 'postgres'
+      url: connectionString,
+      entities: [User], // Add your entities here
+  });
 
       connection = await dataSource.initialize();
       console.log("Database connection established successfully!");
@@ -36,7 +40,6 @@ async function createDatabaseConnection() {
 
 // USERS SET 
 let users: Set<number> = new Set();
-
 
 
 // COMMANDS 
@@ -58,11 +61,11 @@ bot.help((ctx: Context) => ctx.reply('How can I help?'));
 
 // MESSAGE HANDLERS 
 bot.on('text', async (ctx: Context) => {
-  handleMessage(ctx, users);
+  handleMessage(ctx, users, connection);
 });
 
 bot.on('photo', async (ctx: Context) => {
-  handleMessage(ctx, users);
+  handleMessage(ctx, users, connection);
 });
 
 // BROADCAST MESSAGE TO ALL USERS

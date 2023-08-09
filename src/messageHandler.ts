@@ -1,10 +1,19 @@
 import { Context } from 'telegraf';
+import { User } from './dbtypes/User';
 
-export function handleMessage(ctx: Context, users: Set<number>) {
+export async function handleMessage(ctx: Context, users: Set<number>, connection: any) {
  if (ctx.message && ctx.message.from && ctx.message.chat) {
 
     // Save user ID when they send a message to the bot
     users.add(ctx.message.from.id);
+
+    const userRepository = connection.getRepository(User);
+
+    // Write
+    const user = new User();
+    user.first_name = "Timber";
+    user.last_name = "Saw";
+    await userRepository.save(user);
 
     if ('text' in ctx.message) {
       // Respond with a greeting

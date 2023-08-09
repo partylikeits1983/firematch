@@ -20,14 +20,14 @@ help - Get help
 
 ```
 CREATE TABLE users (
-    user_id BIGINT UNIQUE NOT NULL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    gender VARCHAR(50) NOT NULL,
-    preference VARCHAR(50) NOT NULL,
-    subscription VARCHAR(255) NOT NULL,
-    sign_up_date BIGINT NOT NULL, -- UNIX timestamp
-    last_active BIGINT NOT NULL,  -- UNIX timestamp
+    user_id BIGINT UNIQUE,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    gender VARCHAR(50),
+    preference VARCHAR(50),
+    subscription VARCHAR(255),
+    sign_up_date BIGINT, -- UNIX timestamp
+    last_active BIGINT,  -- UNIX timestamp
     photo_ids TEXT[] DEFAULT '{}', -- Array of strings
     likes INT[] DEFAULT '{}',     -- Array of integers
     geolocation POINT             -- Using the POINT type for geolocation
