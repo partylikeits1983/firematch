@@ -13,14 +13,6 @@ export function handleMessage(ctx: Context, users: Set<number>) {
         `Hello ${ctx.message.from.first_name}`,
       );
 
-      // Forward the received message back to the sender
-      ctx.telegram.forwardMessage(
-        ctx.message.chat.id,        // The chat where the message will be forwarded to
-        ctx.message.chat.id,        // The chat from which the message will be forwarded
-        ctx.message.message_id      // Message identifier in the chat specified in from_chat_id
-      );
-
-
       ctx.telegram.sendPhoto(
         ctx.message.chat.id, // Replace with the recipient's chat ID
        "AgACAgEAAxkBAANyZNNy5Ehaw7mYQB9nCajz42joq1sAAtirMRvSNZhGHZQn-jWpm8gBAAMCAAN5AAMwBA" 
@@ -37,3 +29,12 @@ export function handleMessage(ctx: Context, users: Set<number>) {
   }
   // AgACAgEAAxkBAANyZNNy5Ehaw7mYQB9nCajz42joq1sAAtirMRvSNZhGHZQn-jWpm8gBAAMCAAN5AAMwBA
 }
+
+/*  
+      // Forward the received message back to the sender
+      ctx.telegram.forwardMessage(
+        ctx.message.chat.id,        // The chat where the message will be forwarded to
+        ctx.message.chat.id,        // The chat from which the message will be forwarded
+        ctx.message.message_id      // Message identifier in the chat specified in from_chat_id
+      );
+*/
