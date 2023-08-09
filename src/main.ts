@@ -7,9 +7,10 @@ import 'reflect-metadata';
 
 import { User } from "./dbtypes/User";
 
-
 import { handleMessage } from './messageHandler';
+import { startHandler } from './startHandler';
 import { sendTerminalMessageToAll } from './broadcast';
+import { connect } from 'http2';
 
 dotenv.config();
 
@@ -17,33 +18,22 @@ const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 // CREATE CONNECTION 
 const connectionString = process.env.NEON_CONNECTION_STRING as string;
-
 let dataSource: DataSource;
 let connection: any;
-
-async function createDatabaseConnection() {
-  try {
-    dataSource = new DataSource({
-      type: 'postgres', // Switching from 'better-sqlite3' to 'postgres'
-      url: connectionString,
-      entities: [User], // Add your entities here
-  });
-
-      connection = await dataSource.initialize();
-      console.log("Database connection established successfully!");
-
-  } catch (error) {
-      console.error("Error establishing database connection:", error);
-      process.exit(1);  // Exit the process if the connection fails
-  }
-}
 
 // USERS SET 
 let users: Set<number> = new Set();
 
 
 // COMMANDS 
-bot.start((ctx: Context) => ctx.reply('Welcome Firematch!'));
+bot.start(async (ctx: Context) => {
+  ctx.reply('Welcome to Firematch!');
+  
+  // Assuming you've defined or imported startHandler somewhere
+  await startHandler(ctx, users, connection);
+});
+
+
 
 bot.command('match', (ctx: Context) =>
   ctx.reply(`Match command`),
@@ -79,6 +69,23 @@ bot.telegram.setMyCommands([
   { command: 'help', description: 'Get help' },
 ]);
 
+// Create DB connection
+async function createDatabaseConnection() {
+  try {
+    dataSource = new DataSource({
+      type: 'postgres', // Switching from 'better-sqlite3' to 'postgres'
+      url: connectionString,
+      entities: [User], // Add your entities here
+  });
+
+      connection = await dataSource.initialize();
+      console.log("Database connection established successfully!");
+
+  } catch (error) {
+      console.error("Error establishing database connection:", error);
+      process.exit(1);  // Exit the process if the connection fails
+  }
+}
 
 async function startBot() {
   await createDatabaseConnection();
@@ -86,7 +93,6 @@ async function startBot() {
   console.log("Bot started successfully!");
 }
 startBot();
-
 
 // Enable graceful stop
 process.once('SIGINT', async () => {

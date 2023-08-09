@@ -20,9 +20,10 @@ help - Get help
 
 ```
 CREATE TABLE users (
-    user_id BIGINT UNIQUE,
+    user_id NUMBER PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
+    username VARCHAR(255),
     gender VARCHAR(50),
     preference VARCHAR(50),
     subscription VARCHAR(255),
