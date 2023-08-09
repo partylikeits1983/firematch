@@ -33,8 +33,7 @@ export async function closeDatabaseConnection() {
 
     try {
         if (connection) {
-            // If there's a close or disconnect method, use it
-            await connection.close();  // This is just a generic example, adjust based on your library's documentation
+            await connection.close();
             console.log("Database connection closed successfully!");
         }
     } catch (error) {

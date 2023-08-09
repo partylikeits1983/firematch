@@ -3,7 +3,7 @@ import { Telegraf, Context } from 'telegraf';
 
 import "reflect-metadata";
 
-import { createDatabaseConnection, closeDatabaseConnection } from './db-connect';
+import { createDatabaseConnection, closeDatabaseConnection } from './dbConnect';
 
 // import { User } from "./db-types/User";
 
@@ -16,12 +16,10 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 // CREATE CONNECTION 
-
 let connection: any;
 
 // USERS SET 
 let users: Set<number> = new Set();
-
 
 // COMMANDS 
 bot.start(async (ctx: Context) => {
@@ -64,10 +62,11 @@ bot.telegram.setMyCommands([
 ]);
 
 async function startBot() {
-  await createDatabaseConnection();
+  connection = await createDatabaseConnection();
   bot.launch();
   console.log("Bot started successfully!");
 }
+
 startBot();
 
 // Enable graceful stop

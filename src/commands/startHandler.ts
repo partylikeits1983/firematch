@@ -7,7 +7,6 @@ export async function startHandler(ctx: Context, users: Set<number>, connection:
     if (ctx.message && ctx.message.from && ctx.message.chat) {
 
         users.add(ctx.message.from.id);
-
         const userRepository = connection.getRepository(User);
 
         const user = new User();
@@ -19,7 +18,6 @@ export async function startHandler(ctx: Context, users: Set<number>, connection:
 
         user.sign_up_date = getCurrentUnixTimestamp();
         user.last_active = getCurrentUnixTimestamp();
-
 
         await userRepository.save(user);
     }

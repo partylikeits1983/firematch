@@ -1,5 +1,5 @@
 import readline from 'readline';
-import { Telegraf, Context } from 'telegraf';
+import { Telegraf } from 'telegraf';
 
 export function sendTerminalMessageToAll(bot: Telegraf, users: Set<number>) {
   // Set up a readline interface for terminal input
