@@ -2,23 +2,21 @@ import dotenv from 'dotenv';
 import { Telegraf, Context } from 'telegraf';
 
 import "reflect-metadata";
-import {DataSource} from "typeorm";
-import 'reflect-metadata';
 
-import { User } from "./dbtypes/User";
+import { createDatabaseConnection, closeDatabaseConnection } from './db-connect';
 
-import { handleMessage } from './messageHandler';
-import { startHandler } from './startHandler';
-import { sendTerminalMessageToAll } from './broadcast';
-import { connect } from 'http2';
+// import { User } from "./db-types/User";
+
+import { handleMessage } from './commands/messageHandler';
+import { startHandler } from './commands/startHandler';
+import { sendTerminalMessageToAll } from './notifications/broadcast';
 
 dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 // CREATE CONNECTION 
-const connectionString = process.env.NEON_CONNECTION_STRING as string;
-let dataSource: DataSource;
+
 let connection: any;
 
 // USERS SET 
@@ -28,12 +26,8 @@ let users: Set<number> = new Set();
 // COMMANDS 
 bot.start(async (ctx: Context) => {
   ctx.reply('Welcome to Firematch!');
-  
-  // Assuming you've defined or imported startHandler somewhere
   await startHandler(ctx, users, connection);
 });
-
-
 
 bot.command('match', (ctx: Context) =>
   ctx.reply(`Match command`),
@@ -69,24 +63,6 @@ bot.telegram.setMyCommands([
   { command: 'help', description: 'Get help' },
 ]);
 
-// Create DB connection
-async function createDatabaseConnection() {
-  try {
-    dataSource = new DataSource({
-      type: 'postgres', // Switching from 'better-sqlite3' to 'postgres'
-      url: connectionString,
-      entities: [User], // Add your entities here
-  });
-
-      connection = await dataSource.initialize();
-      console.log("Database connection established successfully!");
-
-  } catch (error) {
-      console.error("Error establishing database connection:", error);
-      process.exit(1);  // Exit the process if the connection fails
-  }
-}
-
 async function startBot() {
   await createDatabaseConnection();
   bot.launch();
@@ -105,14 +81,3 @@ process.once('SIGTERM', async () => {
   bot.stop('SIGTERM');
 });
 
-async function closeDatabaseConnection() {
-  try {
-      if (connection) {
-          // If there's a close or disconnect method, use it
-          await connection.close();  // This is just a generic example, adjust based on your library's documentation
-          console.log("Database connection closed successfully!");
-      }
-  } catch (error) {
-      console.error("Error closing database connection:", error);
-  }
-}

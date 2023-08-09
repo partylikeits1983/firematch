@@ -1,7 +1,7 @@
 import { Context } from 'telegraf';
-import { User } from './dbtypes/User';
+import { User } from '../db-types/User';
 
-import { getCurrentUnixTimestamp } from './utils/unixTime';
+import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
 export async function handleMessage(ctx: Context, users: Set<number>, connection: any) {
  if (ctx.message && ctx.message.from && ctx.message.chat) {
