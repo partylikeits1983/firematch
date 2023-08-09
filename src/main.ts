@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { Telegraf, Context } from 'telegraf';
-import { handleMessage } from './messageHandler';  // Import our functions from the separated module
+
+import { handleMessage } from './messageHandler';
 import { sendTerminalMessageToAll } from './broadcast';
 
 dotenv.config();
@@ -11,13 +12,22 @@ let users: Set<number> = new Set();
 
 bot.start((ctx: Context) => ctx.reply('Welcome Firematch!'));
 bot.help((ctx: Context) => ctx.reply('How can I help?'));
-bot.command('users', (ctx: Context) => ctx.reply(`Currently, there are ${users.size} users.`));
+
+bot.command('users', (ctx: Context) =>
+  ctx.reply(`Currently, there are ${users.size} users.`),
+);
 
 bot.on('text', async (ctx: Context) => {
   handleMessage(ctx, users);
 });
 
 sendTerminalMessageToAll(bot, users);
+
+bot.telegram.setMyCommands([
+  { command: 'start', description: 'Start the bot' },
+  { command: 'help', description: 'Get help' },
+  { command: 'users', description: 'See the number of users' },
+]);
 
 bot.launch();
 
