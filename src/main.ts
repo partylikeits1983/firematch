@@ -21,6 +21,11 @@ bot.on('text', async (ctx: Context) => {
   handleMessage(ctx, users);
 });
 
+bot.on('photo', async (ctx: Context) => {
+  handleMessage(ctx, users);
+});
+
+
 sendTerminalMessageToAll(bot, users);
 
 bot.telegram.setMyCommands([
