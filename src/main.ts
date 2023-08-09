@@ -7,8 +7,11 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
-// Store all users that activated the bot
 let users: Set<number> = new Set();
+
+bot.start((ctx: Context) => ctx.reply('Welcome Firematch!'));
+bot.help((ctx: Context) => ctx.reply('How can I help?'));
+bot.command('users', (ctx: Context) => ctx.reply(`Currently, there are ${users.size} users.`));
 
 bot.on('text', async (ctx: Context) => {
   handleMessage(ctx, users);
