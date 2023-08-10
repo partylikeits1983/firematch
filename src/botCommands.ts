@@ -13,15 +13,9 @@ export function setupBotCommands(
     bot.start(async (ctx: Context) => {
         await startHandler(ctx, users, connection);
         await updateProfile(ctx);
-
-        console.log("end");
     });
 
 
-    bot.on('poll_answer', async (ctx: Context) => {
-        await handleUpdateProfile(ctx, connection);
-    });
-    
 
     bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
 
@@ -32,6 +26,12 @@ export function setupBotCommands(
     bot.command('data', (ctx: Context) => ctx.reply(`data command`));
 
     bot.help((ctx: Context) => ctx.reply('How can I help?'));
+
+    // POLL HANDLER
+    bot.on('poll_answer', async (ctx: Context) => {
+        await handleUpdateProfile(ctx, connection);
+    });
+
 
     // MESSAGE HANDLERS
     bot.on('text', async (ctx: Context) => {
