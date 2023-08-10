@@ -102,24 +102,28 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
         return;
     }
 
-    console.log("handleGetUserPosition")
+    console.log('handleGetUserPosition');
     console.log(connection);
     console.log(ctx.pollAnswer);
-    
+
     const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
 
     if (user) {
         user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
-        console.log("SHARE LOCATION");
+        console.log('SHARE LOCATION');
         console.log(user.share_location);
-        
+
         await connection.getRepository(User).save(user);
 
         const keyboard = Markup.keyboard([
             Markup.button.locationRequest('📍 Send location'),
         ]).resize();
-    
-        ctx.telegram.sendMessage(ctx.pollAnswer.user.id, 'Would you like to share your location?', keyboard);
+
+        ctx.telegram.sendMessage(
+            ctx.pollAnswer.user.id,
+            'Would you like to share your location?',
+            keyboard,
+        );
 
         // push get location
     } else {
@@ -127,8 +131,11 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
     }
 }
 
-
-export async function handleWriteUserLocation(ctx: Context, connection: any, location: { latitude: number; longitude: number }) {
+export async function handleWriteUserLocation(
+    ctx: Context,
+    connection: any,
+    location: { latitude: number; longitude: number },
+) {
     console.log('handleWriteUserLocation');
     console.log(ctx);
 
@@ -136,7 +143,7 @@ export async function handleWriteUserLocation(ctx: Context, connection: any, loc
         const userId = Number(ctx.message.from.id);
         const user = await getUser(userId, connection);
 
-        console.log("location");
+        console.log('location');
         console.log(location);
 
         if (user) {
@@ -153,9 +160,6 @@ export async function handleWriteUserLocation(ctx: Context, connection: any, loc
     return false;
 }
 
-
-
-
 export async function handleUpdateProfile(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
         console.log('No poll answer in context.');
@@ -168,10 +172,8 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         return;
     }
 
-    console.log("ctx s");
+    console.log('ctx s');
     console.log(pollInfo);
-
-
 
     switch (pollInfo.type) {
         case 'Your Gender':
@@ -184,7 +186,7 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             break;
         case 'Share location for more precise matches?':
             await handleGetUserPosition(ctx, connection);
-            // await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
+        // await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
         default:
             console.log('Unknown poll type.');
             break;

@@ -46,14 +46,14 @@ export class Polls {
             ['Yes', 'No'],
             { is_anonymous: false },
         );
-        
+
         if (poll) {
             this.pollsMap.set(poll.poll.id, {
                 type: 'Share location for more precise matches?',
                 userId: userId,
             });
         }
-        console.log("in poll");
+        console.log('in poll');
 
         return poll;
     }

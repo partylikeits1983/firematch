@@ -78,18 +78,18 @@ export function setupBotCommands(
 
     bot.on('location', async (ctx: Context) => {
         // Assert that ctx.message is of the required type
-        const message = ctx.message as { location?: { latitude: number; longitude: number } };
-    
+        const message = ctx.message as {
+            location?: { latitude: number; longitude: number };
+        };
+
         if (message?.location) {
             const userLocation = message.location;
             console.log('Received location:', userLocation);
-    
+
             // Handle the received location
             await handleWriteUserLocation(ctx, connection, userLocation);
         }
     });
-    
-    
 
     bot.telegram.setMyCommands([
         { command: 'start', description: 'Start the bot' },
