@@ -5,7 +5,6 @@ import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
 async function startMessage(ctx: Context) {
     ctx.reply('Welcome to Firematch!');
-
 }
 
 async function handleNewUser(ctx: Context, connection: any) {

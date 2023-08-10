@@ -6,12 +6,16 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 // On bot start
-bot.start((ctx: Context) => ctx.replyWithPoll('Test Poll', ['Option 1', 'Option 2'],  { is_anonymous: false } ));
+bot.start((ctx: Context) =>
+    ctx.replyWithPoll('Test Poll', ['Option 1', 'Option 2'], {
+        is_anonymous: false,
+    }),
+);
 
 // Handle poll answer
 bot.on('poll_answer', (ctx: Context) => {
     if (ctx.pollAnswer) {
-        console.log("Received poll answer:", ctx.pollAnswer);
+        console.log('Received poll answer:', ctx.pollAnswer);
 
         // Check if this is an answer to the first poll
         // Note: For simplicity, you might check the poll_id, but in real-world scenarios, you'll probably want a more reliable method.

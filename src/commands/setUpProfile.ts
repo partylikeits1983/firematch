@@ -14,8 +14,10 @@ export async function updateProfile(ctx: Context) {
     }
 }
 
-
-async function getUser(userId: number, connection: any): Promise<User | undefined> {
+async function getUser(
+    userId: number,
+    connection: any,
+): Promise<User | undefined> {
     const userRepository = connection.getRepository(User);
     return await userRepository.findOne({
         where: { user_id: userId },
@@ -24,7 +26,7 @@ async function getUser(userId: number, connection: any): Promise<User | undefine
 
 async function handleGenderPoll(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
-        console.log("No poll answer in context.");
+        console.log('No poll answer in context.');
         return;
     }
 
@@ -38,7 +40,7 @@ async function handleGenderPoll(ctx: Context, connection: any) {
 
 async function handlePreferencePoll(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
-        console.log("No poll answer in context.");
+        console.log('No poll answer in context.');
         return;
     }
 
@@ -52,18 +54,17 @@ async function handlePreferencePoll(ctx: Context, connection: any) {
 
 export async function handleUpdateProfile(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
-        console.log("No poll answer in context.");
+        console.log('No poll answer in context.');
         return;
     }
     const pollInfo = pollsInstance.getPollInfo(ctx.pollAnswer.poll_id);
 
     if (!pollInfo) {
-        console.log("Poll info not found.");
+        console.log('Poll info not found.');
         return;
     }
 
-
-    switch(pollInfo.type) {
+    switch (pollInfo.type) {
         case 'Your Gender':
             await handleGenderPoll(ctx, connection);
             await pollsInstance.sendPreferencePoll(ctx, pollInfo.userId);
@@ -73,7 +74,7 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             // another poll
             break;
         default:
-            console.log("Unknown poll type.");
+            console.log('Unknown poll type.');
             break;
     }
 }

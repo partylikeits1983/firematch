@@ -15,8 +15,6 @@ export function setupBotCommands(
         await updateProfile(ctx);
     });
 
-
-
     bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
 
     bot.command('users', (ctx: Context) =>
@@ -32,15 +30,14 @@ export function setupBotCommands(
         await handleUpdateProfile(ctx, connection);
     });
 
-
     // MESSAGE HANDLERS
     bot.on('text', async (ctx: Context) => {
-        console.log("text");
+        console.log('text');
         handleMessage(ctx, users, connection);
     });
 
     bot.on('photo', async (ctx: Context) => {
-        console.log("photo")
+        console.log('photo');
         handleMessage(ctx, users, connection);
     });
 
