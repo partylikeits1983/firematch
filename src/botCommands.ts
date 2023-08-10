@@ -56,21 +56,19 @@ export function setupBotCommands(
                 } else {
                     userState.set(ctx.message.from.id, 'setting_age');
                 }
-
             } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
                 await handleUserBio(ctx, connection);
 
                 userState.set(ctx.message.from.id, 'getting_location');
-
-            } else if  (userState.get(ctx.message?.from?.id) === 'getting_location') {}
-                // await handleUserLocation(ctx, connection);
-
-
-            } else {
-                handleMessage(ctx, users, connection); 
+            } else if (
+                userState.get(ctx.message?.from?.id) === 'getting_location'
+            ) {
             }
+            // await handleUserLocation(ctx, connection);
+        } else {
+            handleMessage(ctx, users, connection);
         }
-    );
+    });
 
     bot.on('photo', async (ctx: Context) => {
         console.log('photo');
