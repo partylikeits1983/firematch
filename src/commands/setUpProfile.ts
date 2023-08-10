@@ -1,6 +1,5 @@
 import { Context, Markup } from 'telegraf';
 import { User } from '../db-types/User';
-import { Point } from 'typeorm';
 
 import { Polls } from './polls';
 
@@ -141,19 +140,11 @@ export async function handleWriteUserLocation(ctx: Context, connection: any, loc
         console.log(location);
 
         if (user) {
-            const queryRunner = connection.createQueryRunner();
+            const pointString = `(${location.longitude}, ${location.latitude})`;
 
-            await queryRunner.connect();
+            user.geolocation = pointString;
 
-            const updateSql = `
-                UPDATE "users" 
-                SET "geolocation" = POINT($1, $2) 
-                WHERE "user_id" = $3
-            `;
-
-            await queryRunner.query(updateSql, [location.longitude, location.latitude, userId]);
-
-            await queryRunner.release();
+            await connection.getRepository(User).save(user);
 
             return true;
         }
@@ -161,6 +152,7 @@ export async function handleWriteUserLocation(ctx: Context, connection: any, loc
 
     return false;
 }
+
 
 
 
