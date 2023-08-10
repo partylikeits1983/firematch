@@ -33,7 +33,7 @@ CREATE TABLE users (
     photo_ids TEXT[] DEFAULT '{}', -- Array of strings
     likes INT[] DEFAULT '{}',     -- Array of integers
     share_location BOOL,
-    geolocation POINT,             -- Using the POINT type for geolocation
+    geolocation VARCHAR(255),
     bio TEXT
 );
 ```

@@ -68,7 +68,7 @@ export async function handleUserAge(ctx: Context, connection: any) {
 
         if (user && ctx.message && 'text' in ctx.message) {
             if (checkValidAge(Number(ctx.message.text))) {
-                user.age = Number(ctx.message.text);
+                user.age = Number(parseInt(String(ctx.message.text)));
                 await connection.getRepository(User).save(user);
                 ctx.reply('Write a short bio about yourself');
                 return true;
@@ -101,17 +101,11 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
         console.log('No poll answer in context.');
         return;
     }
-
-    console.log('handleGetUserPosition');
-    console.log(connection);
-    console.log(ctx.pollAnswer);
-
     const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
 
     if (user) {
         user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
-        console.log('SHARE LOCATION');
-        console.log(user.share_location);
+
 
         await connection.getRepository(User).save(user);
 
@@ -127,6 +121,19 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
 
         // push get location
     } else {
+        if (ctx.message?.from.id) {
+            const userId = Number(ctx.message.from.id);
+            const user = await getUser(userId, connection);
+    
+            if (user) {
+                // moscow coordinates
+                const pointString = `(${55.7558}, ${37.6173})`;
+    
+                user.geolocation = pointString;
+    
+                await connection.getRepository(User).save(user);
+                }
+        }
         // if no push location as Null
     }
 }
@@ -136,15 +143,9 @@ export async function handleWriteUserLocation(
     connection: any,
     location: { latitude: number; longitude: number },
 ) {
-    console.log('handleWriteUserLocation');
-    console.log(ctx);
-
     if (ctx.message?.from.id) {
         const userId = Number(ctx.message.from.id);
         const user = await getUser(userId, connection);
-
-        console.log('location');
-        console.log(location);
 
         if (user) {
             const pointString = `(${location.longitude}, ${location.latitude})`;
