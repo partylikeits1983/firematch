@@ -1,5 +1,6 @@
-import { Context } from 'telegraf';
+import { Context, Markup } from 'telegraf';
 import { User } from '../db-types/User';
+import { Point } from 'typeorm';
 
 import { Polls } from './polls';
 
@@ -84,7 +85,6 @@ export async function handleUserBio(ctx: Context, connection: any) {
     if (ctx.message?.from.id && ctx.message) {
         const user = await getUser(Number(ctx.message.from.id), connection);
 
-        console.log('IN BIO');
         if (user && ctx.message && 'text' in ctx.message) {
             user.bio = ctx.message.text;
             await connection.getRepository(User).save(user);
@@ -97,18 +97,72 @@ export async function handleUserBio(ctx: Context, connection: any) {
     }
 }
 
-export async function handleUserLocation(ctx: Context, connection: any) {
-    if (ctx.message?.from.id && ctx.message) {
-        const user = await getUser(Number(ctx.message.from.id), connection);
+export async function handleGetUserPosition(ctx: Context, connection: any) {
+    if (!ctx.pollAnswer) {
+        console.log('No poll answer in context.');
+        return;
+    }
 
-        console.log('IN BIO');
-        if (user && ctx.message && 'text' in ctx.message) {
-            // user.bio = ctx.message.text;
-            // await connection.getRepository(User).save(user);
+    console.log("handleGetUserPosition")
+    console.log(connection);
+    console.log(ctx.pollAnswer);
+    
+    const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
+
+    if (user) {
+        user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
+        console.log("SHARE LOCATION");
+        console.log(user.share_location);
+        
+        await connection.getRepository(User).save(user);
+
+        const keyboard = Markup.keyboard([
+            Markup.button.locationRequest('📍 Send location'),
+        ]).resize();
+    
+        ctx.telegram.sendMessage(ctx.pollAnswer.user.id, 'Would you like to share your location?', keyboard);
+
+        // push get location
+    } else {
+        // if no push location as Null
+    }
+}
+
+
+export async function handleWriteUserLocation(ctx: Context, connection: any, location: { latitude: number; longitude: number }) {
+    console.log('handleWriteUserLocation');
+    console.log(ctx);
+
+    if (ctx.message?.from.id) {
+        const userId = Number(ctx.message.from.id);
+        const user = await getUser(userId, connection);
+
+        console.log("location");
+        console.log(location);
+
+        if (user) {
+            const queryRunner = connection.createQueryRunner();
+
+            await queryRunner.connect();
+
+            const updateSql = `
+                UPDATE "users" 
+                SET "geolocation" = POINT($1, $2) 
+                WHERE "user_id" = $3
+            `;
+
+            await queryRunner.query(updateSql, [location.longitude, location.latitude, userId]);
+
+            await queryRunner.release();
+
             return true;
         }
     }
+
+    return false;
 }
+
+
 
 export async function handleUpdateProfile(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
@@ -122,6 +176,11 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         return;
     }
 
+    console.log("ctx s");
+    console.log(pollInfo);
+
+
+
     switch (pollInfo.type) {
         case 'Your Gender':
             await handleGenderPoll(ctx, connection);
@@ -131,8 +190,9 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             await handlePreferencePoll(ctx, connection);
             await pollsInstance.sendAgeMessage(ctx, pollInfo.userId);
             break;
-        case 'Share Location':
-            await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
+        case 'Share location for more precise matches?':
+            await handleGetUserPosition(ctx, connection);
+            // await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
         default:
             console.log('Unknown poll type.');
             break;

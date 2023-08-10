@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, Point } from 'typeorm';
 
 @Entity('users') // Specify the table name here
 export class User {
@@ -39,7 +39,10 @@ export class User {
     likes: string[];
 
     @Column()
-    geolocation: string;
+    share_location: boolean;
+
+    @Column('point')
+    geolocation: Point;
 
     @Column()
     bio: string;

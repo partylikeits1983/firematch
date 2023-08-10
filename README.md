@@ -32,6 +32,7 @@ CREATE TABLE users (
     last_active BIGINT,  -- UNIX timestamp
     photo_ids TEXT[] DEFAULT '{}', -- Array of strings
     likes INT[] DEFAULT '{}',     -- Array of integers
+    share_location BOOL,
     geolocation POINT,             -- Using the POINT type for geolocation
     bio TEXT
 );
