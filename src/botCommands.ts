@@ -2,6 +2,8 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
+import { setUpProfile } from './commands/setUpProfile';
+
 export function setupBotCommands(
     bot: Telegraf<Context>,
     users: Set<number>,
@@ -10,7 +12,16 @@ export function setupBotCommands(
     // COMMANDS
     bot.start(async (ctx: Context) => {
         await startHandler(ctx, users, connection);
+        await setUpProfile(ctx, users, connection);
+
+        console.log("end");
     });
+
+
+    bot.on('poll_answer', async (ctx: Context) => {
+        console.log("Poll answer received:", ctx.pollAnswer);
+    });
+    
 
     bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
 
@@ -24,10 +35,12 @@ export function setupBotCommands(
 
     // MESSAGE HANDLERS
     bot.on('text', async (ctx: Context) => {
+        console.log("text");
         handleMessage(ctx, users, connection);
     });
 
     bot.on('photo', async (ctx: Context) => {
+        console.log("photo")
         handleMessage(ctx, users, connection);
     });
 
