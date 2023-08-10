@@ -3,8 +3,14 @@ import { User } from '../db-types/User';
 
 import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
+async function startMessage(ctx: Context) {
+    ctx.reply('Welcome to Firematch!');
+}
+
 export async function startHandler(ctx: Context, users: Set<number>, connection: any) {
     if (ctx.message && ctx.message.from && ctx.message.chat) {
+
+        await startMessage(ctx);
 
         users.add(ctx.message.from.id);
         const userRepository = connection.getRepository(User);

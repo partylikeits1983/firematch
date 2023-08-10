@@ -6,7 +6,6 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
 
     // COMMANDS
     bot.start(async (ctx: Context) => {
-        ctx.reply('Welcome to Firematch!');
         await startHandler(ctx, users, connection);
     });
 
