@@ -20,7 +20,7 @@ help - Get help
 
 ```
 CREATE TABLE users (
-    user_id NUMBER PRIMARY KEY,
+    user_id INT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     username VARCHAR(255),

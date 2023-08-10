@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
 import { Telegraf, Context } from 'telegraf';
 
-import "reflect-metadata";
+import 'reflect-metadata';
 
 import { createDatabaseConnection, closeDatabaseConnection } from './dbConnect';
-
 
 import { sendTerminalMessageToAll } from './notifications/broadcast';
 
@@ -14,40 +13,38 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
-// CREATE CONNECTION 
+// CREATE CONNECTION
 let connection: any;
 
-// USERS SET 
+// USERS SET
 let users: Set<number> = new Set();
 
-
 function initialize() {
-  // COMMANDS 
-  setupBotCommands(bot, users, connection);
+    // COMMANDS
+    setupBotCommands(bot, users, connection);
 
-  // BROADCAST MESSAGE TO ALL USERS
-  sendTerminalMessageToAll(bot, users);
+    // BROADCAST MESSAGE TO ALL USERS
+    sendTerminalMessageToAll(bot, users);
 }
 
 async function startBot() {
-  connection = await createDatabaseConnection();
+    connection = await createDatabaseConnection();
 
-  initialize();
-  bot.launch();
-  
-  console.log("Bot started successfully!");
+    initialize();
+    bot.launch();
+
+    console.log('Bot started successfully!');
 }
 
 startBot();
 
 // Enable graceful stop
 process.once('SIGINT', async () => {
-  await closeDatabaseConnection();
-  bot.stop('SIGINT');
+    await closeDatabaseConnection();
+    bot.stop('SIGINT');
 });
 
 process.once('SIGTERM', async () => {
-  await closeDatabaseConnection();
-  bot.stop('SIGTERM');
+    await closeDatabaseConnection();
+    bot.stop('SIGTERM');
 });
-

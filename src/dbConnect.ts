@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import "reflect-metadata";
-import { DataSource } from "typeorm";
-import { User } from "./db-types/User";
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import { User } from './db-types/User';
 
 dotenv.config();
 
@@ -15,15 +15,15 @@ export async function createDatabaseConnection() {
         dataSource = new DataSource({
             type: 'postgres',
             url: connectionString,
-            entities: [User]
+            entities: [User],
         });
 
         connection = await dataSource.initialize();
-        console.log("Database connection established successfully!");
+        console.log('Database connection established successfully!');
 
         return connection;
     } catch (error) {
-        console.error("Error establishing database connection:", error);
+        console.error('Error establishing database connection:', error);
         process.exit(1);
     }
 }
@@ -34,9 +34,9 @@ export async function closeDatabaseConnection() {
     try {
         if (connection) {
             await connection.close();
-            console.log("Database connection closed successfully!");
+            console.log('Database connection closed successfully!');
         }
     } catch (error) {
-        console.error("Error closing database connection:", error);
+        console.error('Error closing database connection:', error);
     }
-  }
+}

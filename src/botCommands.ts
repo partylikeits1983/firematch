@@ -2,28 +2,27 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
-export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, connection: any) {
-
+export function setupBotCommands(
+    bot: Telegraf<Context>,
+    users: Set<number>,
+    connection: any,
+) {
     // COMMANDS
     bot.start(async (ctx: Context) => {
         await startHandler(ctx, users, connection);
     });
 
-    bot.command('match', (ctx: Context) => 
-        ctx.reply(`Match command`),
-    );
+    bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
 
-    bot.command('users', (ctx: Context) => 
+    bot.command('users', (ctx: Context) =>
         ctx.reply(`Currently, there are ${users.size} users.`),
     );
 
-    bot.command('data', (ctx: Context) => 
-        ctx.reply(`data command`),
-    );
+    bot.command('data', (ctx: Context) => ctx.reply(`data command`));
 
     bot.help((ctx: Context) => ctx.reply('How can I help?'));
 
-    // MESSAGE HANDLERS 
+    // MESSAGE HANDLERS
     bot.on('text', async (ctx: Context) => {
         handleMessage(ctx, users, connection);
     });
