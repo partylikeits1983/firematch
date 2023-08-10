@@ -73,7 +73,7 @@ export async function handleUserAge(ctx: Context, connection: any) {
                 ctx.reply('Write a short bio about yourself');
                 return true;
             } else {
-                ctx.reply('Invalid Age');
+                ctx.reply('Invalid Age (18-100)');
                 return false;
             }
         }
@@ -87,15 +87,14 @@ export async function handleUserBio(ctx: Context, connection: any) {
         if (user && ctx.message && 'text' in ctx.message) {
             user.bio = ctx.message.text;
             await connection.getRepository(User).save(user);
-            // ctx.reply('Share location for more precise matches?');
             pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
             // ctx.reply('Share location for more precise matches?');
-
             return true;
         }
     }
 }
 
+// pls edit this ...
 export async function handleGetUserPosition(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
         console.log('No poll answer in context.');
@@ -106,19 +105,26 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
     if (user) {
         user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
 
-        await connection.getRepository(User).save(user);
+        if (user.share_location) {
+            await connection.getRepository(User).save(user);
 
-        const keyboard = Markup.keyboard([
-            Markup.button.locationRequest('📍 Send location'),
-        ]).resize();
+            const keyboard = Markup.keyboard([
+                Markup.button.locationRequest('📍 Send location'),
+            ]).resize();
+    
+            ctx.telegram.sendMessage(
+                ctx.pollAnswer.user.id,
+                'Share location, or /skip_location_share',
+                keyboard,
+            );
+        } else {
+            ctx.telegram.sendMessage(
+                ctx.pollAnswer.user.id,
+                'You can share you location later by typing /share_location'
+            ); 
+        }
 
-        ctx.telegram.sendMessage(
-            ctx.pollAnswer.user.id,
-            'Would you like to share your location?',
-            keyboard,
-        );
 
-        // push get location
     } else {
         if (ctx.message?.from.id) {
             const userId = Number(ctx.message.from.id);
@@ -136,6 +142,15 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
         // if no push location as Null
     }
 }
+
+
+export async function handleReturnProfileUpdated(ctx: Context, connection: any) {
+    // const user = await getUser(Number(ctx.message.from.user), connection);
+
+    console.log(ctx);
+    
+}
+
 
 export async function handleWriteUserLocation(
     ctx: Context,
@@ -172,9 +187,6 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         return;
     }
 
-    console.log('ctx s');
-    console.log(pollInfo);
-
     switch (pollInfo.type) {
         case 'Your Gender':
             await handleGenderPoll(ctx, connection);
@@ -188,6 +200,8 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             await handleGetUserPosition(ctx, connection);
         // await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
         default:
+            await handleReturnProfileUpdated(ctx, pollInfo.userId);
+
             console.log('Unknown poll type.');
             break;
     }

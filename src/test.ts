@@ -10,7 +10,7 @@ bot.start((ctx) => {
         Markup.button.locationRequest('📍 Send location'),
     ]).resize();
 
-    ctx.reply('Would you like to share your location?', keyboard);
+    ctx.reply('Share location', keyboard);
 });
 
 bot.launch();
