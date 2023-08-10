@@ -94,11 +94,17 @@ export function setupBotCommands(
     bot.telegram.setMyCommands([
         { command: 'start', description: 'Start the bot' },
         { command: 'match', description: 'Get sent matches' },
-        { command: 'users', description: 'see how many users in your location' },
+        {
+            command: 'users',
+            description: 'see how many users in your location',
+        },
 
         { command: 'set_location', description: 'Update your location' },
         { command: 'update_profile', description: 'Update your profile' },
-        { command: 'update_profile_pics', description: 'Update your profile images' },
+        {
+            command: 'update_profile_pics',
+            description: 'Update your profile images',
+        },
 
         { command: 'data', description: 'Get analytics' },
         { command: 'help', description: 'Get help' },

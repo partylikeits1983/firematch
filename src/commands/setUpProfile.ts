@@ -106,7 +106,6 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
     if (user) {
         user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
 
-
         await connection.getRepository(User).save(user);
 
         const keyboard = Markup.keyboard([
@@ -124,15 +123,15 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
         if (ctx.message?.from.id) {
             const userId = Number(ctx.message.from.id);
             const user = await getUser(userId, connection);
-    
+
             if (user) {
                 // moscow coordinates
                 const pointString = `(${55.7558}, ${37.6173})`;
-    
+
                 user.geolocation = pointString;
-    
+
                 await connection.getRepository(User).save(user);
-                }
+            }
         }
         // if no push location as Null
     }
