@@ -39,6 +39,35 @@ export class Polls {
         return poll;
     }
 
+    async sendShareLocationPoll(ctx: Context, userId: number) {
+        const poll = await ctx.telegram.sendPoll(
+            userId,
+            'Share location for more precise matches?',
+            ['Yes', 'No'],
+            { is_anonymous: false },
+        );
+
+        if (poll) {
+            this.pollsMap.set(poll.poll.id, {
+                type: 'Share location for more precise matches?',
+                userId: userId,
+            });
+        }
+
+        return poll;
+    }
+
+    async sendAgeMessage(ctx: Context, userId: number) {
+        return await ctx.telegram.sendMessage(userId, 'What is your age?');
+    }
+
+    async sendBioMessage(ctx: Context, userId: number) {
+        return await ctx.telegram.sendMessage(
+            userId,
+            'Write a short bio about yourself',
+        );
+    }
+
     getPollInfo(pollId: string): { type: string; userId: number } | undefined {
         return this.pollsMap.get(pollId);
     }

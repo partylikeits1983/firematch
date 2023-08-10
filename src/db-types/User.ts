@@ -18,6 +18,9 @@ export class User {
     gender: string;
 
     @Column()
+    age: number;
+
+    @Column()
     preference: string;
 
     @Column()
@@ -37,4 +40,7 @@ export class User {
 
     @Column()
     geolocation: string;
+
+    @Column()
+    bio: string;
 }

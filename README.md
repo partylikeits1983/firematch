@@ -25,12 +25,14 @@ CREATE TABLE users (
     last_name VARCHAR(255),
     username VARCHAR(255),
     gender VARCHAR(50),
+    age INT,
     preference VARCHAR(50),
     subscription VARCHAR(255),
     sign_up_date BIGINT, -- UNIX timestamp
     last_active BIGINT,  -- UNIX timestamp
     photo_ids TEXT[] DEFAULT '{}', -- Array of strings
     likes INT[] DEFAULT '{}',     -- Array of integers
-    geolocation POINT             -- Using the POINT type for geolocation
+    geolocation POINT,             -- Using the POINT type for geolocation
+    bio TEXT
 );
 ```

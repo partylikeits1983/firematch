@@ -2,17 +2,29 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
-import { updateProfile, handleUpdateProfile } from './commands/setUpProfile';
+import {
+    updateProfile,
+    handleUpdateProfile,
+    handleUserAge,
+    handleUserBio,
+} from './commands/setUpProfile';
 
 export function setupBotCommands(
     bot: Telegraf<Context>,
     users: Set<number>,
     connection: any,
 ) {
+    const userState: Map<number, string> = new Map();
+
     // COMMANDS
     bot.start(async (ctx: Context) => {
-        await startHandler(ctx, users, connection);
-        await updateProfile(ctx);
+        if (ctx.message?.from.id) {
+            console.log('HERE');
+            userState.set(ctx.message.from.id, 'setting_age');
+
+            await startHandler(ctx, users, connection);
+            await updateProfile(ctx);
+        }
     });
 
     bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
@@ -32,9 +44,33 @@ export function setupBotCommands(
 
     // MESSAGE HANDLERS
     bot.on('text', async (ctx: Context) => {
-        console.log('text');
-        handleMessage(ctx, users, connection);
-    });
+        if (ctx.message?.from.id) {
+            console.log(userState.get(ctx.message.from.id));
+
+            // Check if the user is in the age answering state
+            if (userState.get(ctx.message?.from?.id) === 'setting_age') {
+                let success = await handleUserAge(ctx, connection);
+
+                if (success) {
+                    userState.set(ctx.message.from.id, 'writing_bio');
+                } else {
+                    userState.set(ctx.message.from.id, 'setting_age');
+                }
+
+            } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
+                await handleUserBio(ctx, connection);
+
+                userState.set(ctx.message.from.id, 'getting_location');
+
+            } else if  (userState.get(ctx.message?.from?.id) === 'getting_location') {}
+                // await handleUserLocation(ctx, connection);
+
+
+            } else {
+                handleMessage(ctx, users, connection); 
+            }
+        }
+    );
 
     bot.on('photo', async (ctx: Context) => {
         console.log('photo');
