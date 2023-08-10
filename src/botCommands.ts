@@ -2,7 +2,7 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
-import { setUpProfile } from './commands/setUpProfile';
+import { updateProfile, handleUpdateProfile } from './commands/setUpProfile';
 
 export function setupBotCommands(
     bot: Telegraf<Context>,
@@ -12,14 +12,14 @@ export function setupBotCommands(
     // COMMANDS
     bot.start(async (ctx: Context) => {
         await startHandler(ctx, users, connection);
-        await setUpProfile(ctx, users, connection);
+        await updateProfile(ctx);
 
         console.log("end");
     });
 
 
     bot.on('poll_answer', async (ctx: Context) => {
-        console.log("Poll answer received:", ctx.pollAnswer);
+        await handleUpdateProfile(ctx, connection);
     });
     
 
