@@ -5,31 +5,28 @@ import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
 async function startMessage(ctx: Context) {
     ctx.reply('Welcome to Firematch!');
+
 }
 
 async function handleNewUser(ctx: Context, connection: any) {
     if (ctx.message && ctx.message.from && ctx.message.chat) {
         const userRepository = connection.getRepository(User);
 
-        const existingUser = await userRepository.findOne({
+        let user = await userRepository.findOne({
             where: { user_id: Number(ctx.message.from.id) },
         });
 
-        const user = new User();
-
-        if (!existingUser) {
+        if (!user) {
+            user = new User();
             user.user_id = Number(ctx.message.from.id);
-            user.first_name = ctx.message.from.first_name;
-            user.last_name = ctx.message.from.last_name ?? '-';
-            user.username = ctx.message.from.username ?? '-';
             user.sign_up_date = getCurrentUnixTimestamp();
-            user.last_active = getCurrentUnixTimestamp();
-        } else {
-            user.first_name = ctx.message.from.first_name;
-            user.last_name = ctx.message.from.last_name ?? '-';
-            user.username = ctx.message.from.username ?? '-';
-            user.last_active = getCurrentUnixTimestamp();
         }
+
+        user.first_name = ctx.message.from.first_name;
+        user.last_name = ctx.message.from.last_name ?? '-';
+        user.username = ctx.message.from.username ?? '-';
+        user.last_active = getCurrentUnixTimestamp();
+
         await userRepository.save(user);
     }
 }
