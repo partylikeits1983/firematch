@@ -56,37 +56,28 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
     });
 
     // MESSAGE HANDLERS
-    bot.on('text', async (ctx: Context) => {
+
+    bot.command('skip_location_share', async (ctx: Context) => {
         if (ctx.message?.from.id) {
-            console.log(userState.get(ctx.message.from.id));
-
-            // Check if the user is in the age answering state
-            if (userState.get(ctx.message?.from?.id) === 'setting_age') {
-                let success = await handleUserAge(ctx, connection);
-
-                if (success) {
-                    userState.set(ctx.message.from.id, 'writing_bio');
-                } else {
-                    userState.set(ctx.message.from.id, 'setting_age');
-                }
-            } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
-                let success = await handleUserBio(ctx, connection);
-
-                if (success) {
-                    userState.set(ctx.message.from.id, 'getting_location');
-                    await pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
-
-                    // ctx.telegram.sendMessage(ctx.message.from.id, "Your profile has been set!")
-                    //
-                } else {
-                    // userState.set(ctx.message.from.id, 'getting_location');
-                }
-            } else if (userState.get(ctx.message?.from?.id) === 'getting_location') {
-            }
-            // await handleUserLocation(ctx, connection);
-        } else {
-            handleMessage(ctx, users, connection);
+            userState.set(ctx.message?.from.id, '');
+            
+            await ctx.sendMessage('Your profile has been set!');
+            await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
         }
+    });
+
+
+    bot.command('update_bio', async (ctx: Context) => {
+        if (ctx.message?.from.id) {
+            await ctx.sendMessage('Send you bio:');
+            userState.set(ctx.message?.from.id, 'update_bio');
+        }
+
+/*         if (userState.get(ctx.message?.from?.id) === 'update_bio') {}
+        await handleUserBio(ctx, connection);
+
+        await ctx.sendMessage('Your bio has been updated!');
+        await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id); */
     });
 
     bot.command('cancel', (ctx: Context) => {
@@ -122,6 +113,37 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
         }
     });
 
+    bot.on('text', async (ctx: Context) => {
+        if (ctx.message?.from.id) {
+            if (userState.get(ctx.message?.from?.id) === 'setting_age') {
+                let success = await handleUserAge(ctx, connection);
+
+                if (success) {
+                    userState.set(ctx.message.from.id, 'writing_bio');
+                } else {
+                    userState.set(ctx.message.from.id, 'setting_age');
+                }
+            } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
+                let success = await handleUserBio(ctx, connection);
+
+                if (success) {
+                    userState.set(ctx.message.from.id, 'getting_location');
+                    await pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
+                }
+            } else if (userState.get(ctx.message?.from?.id) === 'update_bio') {
+                await handleUserBio(ctx, connection);
+
+                await ctx.sendMessage('Your bio has been updated!');
+                await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
+            }
+
+
+        } else {
+            handleMessage(ctx, users, connection);
+        }
+    });
+
+
     bot.telegram.setMyCommands([
         { command: 'start', description: 'Start the bot' },
         {
@@ -133,6 +155,8 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
             command: 'users',
             description: 'see how many users in your location',
         },
+
+        { command: 'update_bio', description: 'Update your bio' },
 
         { command: 'set_location', description: 'Update your location' },
         { command: 'update_profile', description: 'Update your profile' },

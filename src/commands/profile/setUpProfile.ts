@@ -1,25 +1,23 @@
 import { Context } from 'telegraf';
-import { User } from '../../db-types/User';
+// import { User } from '../../db-types/User';
 
-import { getUser } from './getUser';
+// import { getUser } from './getUser';
 import { handleGenderPoll } from './handleGenderPoll';
 import { handlePreferencePoll } from './handlePreferencePoll';
 
 import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
 import { handleGetUserPosition } from './location/handleGetUserPosition';
-
 import { handleUpdateProfileImage } from './handleUpdateProfileImage';
-export { handleUpdateProfileImage };
-
 import { handleUserAge } from './handleUserAge';
-export { handleUserAge };
-
 import { handleWriteUserLocation } from './location/handleWriteUserLocation';
+import { handleUserBio } from './handleUserBio';
+
+export { handleUpdateProfileImage };
+export { handleUserAge };
 export { handleWriteUserLocation };
-
 export { handleReturnProfileUpdated };
+export { handleUserBio };
 
-// const pollsInstance = new Polls();
 import { pollsInstance } from '../../botCommands';
 
 export async function updateProfile(ctx: Context) {
@@ -28,18 +26,6 @@ export async function updateProfile(ctx: Context) {
         await pollsInstance.sendGenderPoll(ctx, ctx.message.from.id);
     } else {
         console.error('Context message or message.from is undefined.');
-    }
-}
-
-export async function handleUserBio(ctx: Context, connection: any) {
-    if (ctx.message?.from.id && ctx.message) {
-        const user = await getUser(Number(ctx.message.from.id), connection);
-
-        if (user && ctx.message && 'text' in ctx.message) {
-            user.bio = ctx.message.text;
-            await connection.getRepository(User).save(user);
-            return true;
-        }
     }
 }
 
@@ -72,8 +58,7 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
                 await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
                 await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
             }
-        // await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
-        // await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
+
         default:
             console.log('Unknown poll type.');
             break;
