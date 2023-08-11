@@ -36,7 +36,8 @@ export class User {
     photo_ids: string[];
 
     @Column('text', { array: true, default: () => 'ARRAY[]' })
-    likes: string[];
+    likes: number[];
+    
 
     @Column()
     share_location: boolean;
