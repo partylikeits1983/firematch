@@ -15,7 +15,7 @@ import { handleUserAge } from './handleUserAge';
 export { handleUserAge };
 
 import { handleWriteUserLocation } from './location/handleWriteUserLocation';
-export { handleWriteUserLocation }
+export { handleWriteUserLocation };
 
 export { handleReturnProfileUpdated };
 
@@ -42,7 +42,6 @@ export async function handleUserBio(ctx: Context, connection: any) {
         }
     }
 }
-
 
 export async function handleUpdateProfile(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
@@ -73,8 +72,8 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
                 await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
                 await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
             }
-            // await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
-            // await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
+        // await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
+        // await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
         default:
             console.log('Unknown poll type.');
             break;

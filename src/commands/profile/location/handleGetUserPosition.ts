@@ -43,7 +43,6 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
             );
             return false;
         }
-        
     } else {
         if (ctx.message?.from.id) {
             const userId = Number(ctx.message.from.id);
