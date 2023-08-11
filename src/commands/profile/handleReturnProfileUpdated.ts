@@ -1,17 +1,34 @@
 import { Context } from 'telegraf';
-// import { User } from '../../db-types/User';
-// import { getUser } from './getUser';
+import { getUser } from './getUser';
 
-export async function handleReturnProfileUpdated(
-    ctx: Context,
-    connection: any,
+import { getCityFromGeoLocation } from '../../utils/getNearestCity';
 
-) {
-    console.log("inside handle return profile updated");
-    console.log(ctx.message);
+export async function handleReturnProfileUpdated(ctx: Context, connection: any, userId: number) {
+    const user = await getUser(userId, connection);
 
-    // const user = await getUser(Number(ctx.message.from.user), connection);
+    await ctx.telegram.sendMessage(userId, "Here's your profile: ");
 
-    
-    console.log(ctx);
+    if (user) {
+
+        console.log('user')
+        console.log(user);
+
+    console.log(getCityFromGeoLocation(user.geolocation));
+
+    const locationString = getCityFromGeoLocation(user.geolocation)
+
+        const message = `
+Name: ${user.first_name}
+
+Gender: ${user.gender}
+Age: ${user.age}
+Preference: ${user.preference}
+
+Geolocation: ${locationString}
+Bio: ${user.bio}`;
+
+        await ctx.telegram.sendMessage(userId, message);
+    } else {
+        await ctx.telegram.sendMessage(userId, "Sorry, we couldn't find your profile data.");
+    }
 }

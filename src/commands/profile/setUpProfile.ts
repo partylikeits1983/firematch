@@ -6,13 +6,18 @@ import { handleGenderPoll } from './handleGenderPoll';
 import { handlePreferencePoll } from './handlePreferencePoll';
 
 import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
-import { handleGetUserPosition } from './handleGetUserPosition';
+import { handleGetUserPosition } from './location/handleGetUserPosition';
 
 import { handleUpdateProfileImage } from './handleUpdateProfileImage';
 export { handleUpdateProfileImage };
 
 import { handleUserAge } from './handleUserAge';
 export { handleUserAge };
+
+import { handleWriteUserLocation } from './location/handleWriteUserLocation';
+export { handleWriteUserLocation }
+
+export { handleReturnProfileUpdated };
 
 // const pollsInstance = new Polls();
 import { pollsInstance } from '../../botCommands';
@@ -38,28 +43,6 @@ export async function handleUserBio(ctx: Context, connection: any) {
     }
 }
 
-export async function handleWriteUserLocation(
-    ctx: Context,
-    connection: any,
-    location: { latitude: number; longitude: number },
-) {
-    if (ctx.message?.from.id) {
-        const userId = Number(ctx.message.from.id);
-        const user = await getUser(userId, connection);
-
-        if (user) {
-            const pointString = `(${location.longitude}, ${location.latitude})`;
-
-            user.geolocation = pointString;
-
-            await connection.getRepository(User).save(user);
-
-            return true;
-        }
-    }
-
-    return false;
-}
 
 export async function handleUpdateProfile(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
@@ -84,12 +67,15 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             await pollsInstance.sendAgeMessage(ctx, pollInfo.userId);
             break;
         case 'Share location for more precise matches?':
-            await handleGetUserPosition(ctx, connection);
-            await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
+            let success = await handleGetUserPosition(ctx, connection);
 
-            await handleReturnProfileUpdated(ctx, pollInfo.userId);
+            if (!success) {
+                await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
+                await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
+            }
+            // await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
+            // await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
         default:
-
             console.log('Unknown poll type.');
             break;
     }

@@ -10,6 +10,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["nearby-cities"]
   }
 }

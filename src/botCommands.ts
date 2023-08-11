@@ -9,6 +9,8 @@ import {
     handleUserBio,
     handleWriteUserLocation,
     handleUpdateProfileImage,
+    handleReturnProfileUpdated
+
 } from './commands/profile/setUpProfile';
 
 import { Polls } from './commands/profile/polls';
@@ -106,12 +108,20 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
             location?: { latitude: number; longitude: number };
         };
 
-        if (message?.location) {
+        console.log('in location');
+        console.log(ctx.message);
+
+
+
+        if (message?.location && ctx.message?.from.id) {
             const userLocation = message.location;
             console.log('Received location:', userLocation);
 
             // Handle the received location
             await handleWriteUserLocation(ctx, connection, userLocation);
+            
+            await ctx.sendMessage('Your profile has been set!');
+            await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
         }
     });
 
