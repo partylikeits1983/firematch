@@ -47,7 +47,7 @@ export class Polls {
             { is_anonymous: false },
         );
 
-        console.log("location");
+        console.log('location');
         console.log(poll);
 
         if (poll) {
@@ -57,9 +57,9 @@ export class Polls {
             });
         }
 
-        console.log("FROM POLL MAP");
+        console.log('FROM POLL MAP');
         console.log(poll.poll.id);
-        console.log(this.getPollInfo(poll.poll.id))
+        console.log(this.getPollInfo(poll.poll.id));
 
         return poll;
     }

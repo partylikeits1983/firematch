@@ -45,18 +45,16 @@ export function setupBotCommands(
 
     bot.help((ctx: Context) => ctx.reply('How can I help?'));
 
-
-    bot.command( 'share_location', async (ctx: Context) => {
+    bot.command('share_location', async (ctx: Context) => {
         // ctx.reply(`share location command`);
         if (ctx.message?.from.id) {
             // const pollsInstance = new Polls();
-            await pollsInstance.sendShareLocationPoll(ctx, ctx.message?.from.id);
+            await pollsInstance.sendShareLocationPoll(
+                ctx,
+                ctx.message?.from.id,
+            );
         }
-   });
-
-
-
-
+    });
 
     // POLL HANDLER
     bot.on('poll_answer', async (ctx: Context) => {

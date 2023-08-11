@@ -15,7 +15,10 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
 
     // Check if the user selected skip
     if (ctx.pollAnswer.option_ids[0] == 2) {
-        ctx.telegram.sendMessage(ctx.pollAnswer.user.id, "You can always share your location later with the command /share_location");
+        ctx.telegram.sendMessage(
+            ctx.pollAnswer.user.id,
+            'You can always share your location later with the command /share_location',
+        );
         return; // Exit the function without further processing
     }
 

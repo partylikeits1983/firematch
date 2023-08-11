@@ -65,7 +65,7 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         return;
     }
 
-    console.log("poll answer");
+    console.log('poll answer');
     console.log(ctx.pollAnswer);
 
     const pollInfo = pollsInstance.getPollInfo(ctx.pollAnswer.poll_id);
