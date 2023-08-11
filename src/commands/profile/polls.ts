@@ -47,20 +47,12 @@ export class Polls {
             { is_anonymous: false },
         );
 
-        console.log('location');
-        console.log(poll);
-
         if (poll) {
             this.pollsMap.set(poll.poll.id, {
                 type: 'Share location for more precise matches?',
                 userId: userId,
             });
         }
-
-        console.log('FROM POLL MAP');
-        console.log(poll.poll.id);
-        console.log(this.getPollInfo(poll.poll.id));
-
         return poll;
     }
 

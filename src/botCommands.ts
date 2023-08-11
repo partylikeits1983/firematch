@@ -8,6 +8,7 @@ import {
     handleUserAge,
     handleUserBio,
     handleWriteUserLocation,
+    handleUpdateProfileImage
 } from './commands/profile/setUpProfile';
 
 import { Polls } from './commands/profile/polls';
@@ -24,11 +25,17 @@ export function setupBotCommands(
     // COMMANDS
     bot.start(async (ctx: Context) => {
         if (ctx.message?.from.id) {
-            console.log('HERE');
             userState.set(ctx.message.from.id, 'setting_age');
 
             await startHandler(ctx, users, connection);
-            await updateProfile(ctx);
+        }
+    });
+
+    bot.command('create_profile', async (ctx: Context) => {
+        if (ctx.message?.from.id) {
+
+        userState.set(ctx.message.from.id, 'setting_age');
+        await updateProfile(ctx);
         }
     });
 
@@ -72,9 +79,19 @@ export function setupBotCommands(
                     userState.set(ctx.message.from.id, 'setting_age');
                 }
             } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
-                await handleUserBio(ctx, connection);
+                let success = await handleUserBio(ctx, connection);
+                console.log("HERE post bio")
 
-                userState.set(ctx.message.from.id, 'getting_location');
+                if (success) {
+                    userState.set(ctx.message.from.id, 'getting_location');
+                    await pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
+
+                    // ctx.telegram.sendMessage(ctx.message.from.id, "Your profile has been set!")
+                    // 
+                } else {
+                    // userState.set(ctx.message.from.id, 'getting_location');
+                }
+
             } else if (
                 userState.get(ctx.message?.from?.id) === 'getting_location'
             ) {
@@ -85,10 +102,19 @@ export function setupBotCommands(
         }
     });
 
+    bot.command('cancel', (ctx: Context) => {
+        if (ctx.message?.from.id) {
+        userState.set(ctx.message?.from.id, '');
+        }
+    });
+
     bot.on('photo', async (ctx: Context) => {
         console.log('photo');
-        handleMessage(ctx, users, connection);
+        await ctx.reply("Your photo has been added to your profile!");
+        handleUpdateProfileImage(ctx, connection);
     });
+    
+
 
     bot.on('location', async (ctx: Context) => {
         // Assert that ctx.message is of the required type
@@ -126,5 +152,6 @@ export function setupBotCommands(
 
         { command: 'data', description: 'Get analytics' },
         { command: 'help', description: 'Get help' },
+        { command: 'cancel', description: 'cancel current operation' },
     ]);
 }

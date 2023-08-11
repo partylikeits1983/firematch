@@ -4,15 +4,21 @@ import { User } from '../../db-types/User';
 import { getUser } from './getUser';
 import { handleGenderPoll } from './handleGenderPoll';
 import { handlePreferencePoll } from './handlePreferencePoll';
-import { handleUserAge } from './handleUserAge';
+
 import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
 import { handleGetUserPosition } from './handleGetUserPosition';
+
+import { handleUpdateProfileImage } from './handleUpdateProfileImage';
+export { handleUpdateProfileImage };
+
+import { handleUserAge } from './handleUserAge';
+export { handleUserAge };
 
 // const pollsInstance = new Polls();
 import { pollsInstance } from '../../botCommands';
 
 export async function updateProfile(ctx: Context) {
-    ctx.reply('Lets set up your profile!');
+    await ctx.reply('Lets set up your profile!');
     if (ctx.message && ctx.message.from) {
         await pollsInstance.sendGenderPoll(ctx, ctx.message.from.id);
     } else {
@@ -27,7 +33,8 @@ export async function handleUserBio(ctx: Context, connection: any) {
         if (user && ctx.message && 'text' in ctx.message) {
             user.bio = ctx.message.text;
             await connection.getRepository(User).save(user);
-            pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
+            
+            // pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
             // ctx.reply('Share location for more precise matches?');
             return true;
         }
@@ -63,9 +70,6 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         return;
     }
 
-    console.log('poll answer');
-    console.log(ctx.pollAnswer);
-
     const pollInfo = pollsInstance.getPollInfo(ctx.pollAnswer.poll_id);
 
     if (!pollInfo) {
@@ -84,7 +88,7 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             break;
         case 'Share location for more precise matches?':
             await handleGetUserPosition(ctx, connection);
-        // await pollsInstance.sendShareLocationPoll(ctx, pollInfo.userId);
+            await ctx.telegram.sendMessage(pollInfo.userId, "Your profile has been set!");    
         default:
             await handleReturnProfileUpdated(ctx, pollInfo.userId);
 
@@ -93,4 +97,3 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
     }
 }
 
-export { handleUserAge };

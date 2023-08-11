@@ -4,7 +4,8 @@ import { User } from '../db-types/User';
 import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
 async function startMessage(ctx: Context) {
-    ctx.reply('Welcome to Firematch! 🔥');
+    await ctx.reply('Welcome to Firematch! 🔥');
+    await ctx.reply('type /create_profile to create your profile');
 }
 
 async function handleNewUser(ctx: Context, connection: any) {
