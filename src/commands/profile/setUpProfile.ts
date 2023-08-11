@@ -2,15 +2,15 @@ import { Context } from 'telegraf';
 // import { User } from '../../db-types/User';
 
 // import { getUser } from './getUser';
-import { handleGenderPoll } from './handleGenderPoll';
-import { handlePreferencePoll } from './handlePreferencePoll';
+import { handleGenderPoll } from './gender/handleGenderPoll';
+import { handlePreferencePoll } from './preference/handlePreferencePoll';
 
-import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
+import { handleReturnProfileUpdated } from './updatedProfile/handleReturnProfileUpdated';
 import { handleGetUserPosition } from './location/handleGetUserPosition';
-import { handleUpdateProfileImage } from './handleUpdateProfileImage';
-import { handleUserAge } from './handleUserAge';
+import { handleUpdateProfileImage } from './images/handleUpdateProfileImage';
+import { handleUserAge } from './age/handleUserAge';
 import { handleWriteUserLocation } from './location/handleWriteUserLocation';
-import { handleUserBio } from './handleUserBio';
+import { handleUserBio } from './bio/handleUserBio';
 
 export { handleUpdateProfileImage };
 export { handleUserAge };

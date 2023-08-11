@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
-import { User } from '../../db-types/User';
-import { getUser } from './getUser';
+import { User } from '../../../db-types/User';
+import { getUser } from '../getUser';
 
 export async function handleUserBio(ctx: Context, connection: any) {
     if (ctx.message?.from.id && ctx.message) {
