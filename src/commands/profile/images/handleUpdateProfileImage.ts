@@ -8,7 +8,7 @@ export async function handleUpdateProfileImage(ctx: Context, connection: any) {
 
         if (photoArray && photoArray.length > 0) {
             // Extract all fileIds from the photoArray
-            const fileIds = photoArray.map(photo => photo.file_id);
+            const fileIds = photoArray.map((photo) => photo.file_id);
 
             // Deduplicate using a Set
             const uniqueFileIds = [...new Set(fileIds)];

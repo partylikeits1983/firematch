@@ -11,7 +11,7 @@ import { handleUpdateProfileImage } from './images/handleUpdateProfileImage';
 import { handleUserAge } from './age/handleUserAge';
 import { handleWriteUserLocation } from './location/handleWriteUserLocation';
 import { handleUserBio } from './bio/handleUserBio';
-import { getUserProfile } from "./getUserProfile";
+import { getUserProfile } from './getUserProfile';
 
 export { handleUpdateProfileImage };
 export { handleUserAge };
@@ -59,7 +59,10 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             if (!success) {
                 await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
                 await handleReturnProfileUpdated(ctx, connection, pollInfo.userId);
-                await ctx.telegram.sendMessage(pollInfo.userId, 'Send the pictures you want to add to your profile');
+                await ctx.telegram.sendMessage(
+                    pollInfo.userId,
+                    'Send the pictures you want to add to your profile',
+                );
             }
 
         default:

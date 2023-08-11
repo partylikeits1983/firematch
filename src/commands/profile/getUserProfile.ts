@@ -8,20 +8,16 @@ export async function getUserProfile(ctx: Context, connection: any, userId: numb
 
     if (!user?.photo_ids[0]) {
         return;
-    }    
+    }
 
-    await ctx.telegram.sendPhoto(
-        userId,
-        user?.photo_ids[0],
-    );
+    await ctx.telegram.sendPhoto(userId, user?.photo_ids[0]);
 
     // await ctx.telegram.sendMessage(userId, "Here's your profile:", { parse_mode: 'Markdown' });
 
     if (user) {
         const locationString = getCityFromGeoLocation(user.geolocation);
 
-        const message = 
-            `**Name**: ${user.first_name}
+        const message = `**Name**: ${user.first_name}
 **Gender**: ${user.gender}
 **Age**: ${user.age}
 **Preference**: ${user.preference}
@@ -31,7 +27,8 @@ export async function getUserProfile(ctx: Context, connection: any, userId: numb
 
         await ctx.telegram.sendMessage(userId, message, { parse_mode: 'Markdown' });
     } else {
-        await ctx.telegram.sendMessage(userId, "Sorry, we couldn't find your profile data.", { parse_mode: 'Markdown' });
+        await ctx.telegram.sendMessage(userId, "Sorry, we couldn't find your profile data.", {
+            parse_mode: 'Markdown',
+        });
     }
 }
-

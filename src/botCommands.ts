@@ -78,9 +78,7 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
 
     bot.command('my_profile', async (ctx: Context) => {
         if (ctx.message?.from.id) {
-
-            await getUserProfile(ctx, connection, ctx.message.from.id); 
-
+            await getUserProfile(ctx, connection, ctx.message.from.id);
         }
     });
 
@@ -134,7 +132,7 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
                 }
             } else if (userState.get(ctx.message?.from?.id) === 'update_bio') {
                 await handleUserBio(ctx, connection);
-                
+
                 await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
             }
         } else {
