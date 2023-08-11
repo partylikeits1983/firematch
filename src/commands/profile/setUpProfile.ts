@@ -1,7 +1,11 @@
 import { Context, Markup } from 'telegraf';
-import { User } from '../db-types/User';
+import { User } from '../../db-types/User';
 
-import { Polls } from './polls';
+import { Polls } from '../polls';
+
+import { getUser } from './getUser';
+import { handleGenderPoll } from './handleGenderPoll';
+import { handlePreferencePoll } from './handlePreferencePoll';
 
 const pollsInstance = new Polls();
 
@@ -11,44 +15,6 @@ export async function updateProfile(ctx: Context) {
         await pollsInstance.sendGenderPoll(ctx, ctx.message.from.id);
     } else {
         console.error('Context message or message.from is undefined.');
-    }
-}
-
-async function getUser(
-    userId: number,
-    connection: any,
-): Promise<User | undefined> {
-    const userRepository = connection.getRepository(User);
-    return await userRepository.findOne({
-        where: { user_id: userId },
-    });
-}
-
-async function handleGenderPoll(ctx: Context, connection: any) {
-    if (!ctx.pollAnswer) {
-        console.log('No poll answer in context.');
-        return;
-    }
-
-    const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
-
-    if (user) {
-        user.gender = ctx.pollAnswer.option_ids[0] === 0 ? 'Male' : 'Female';
-        await connection.getRepository(User).save(user);
-    }
-}
-
-async function handlePreferencePoll(ctx: Context, connection: any) {
-    if (!ctx.pollAnswer) {
-        console.log('No poll answer in context.');
-        return;
-    }
-
-    const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
-
-    if (user) {
-        user.preference = ctx.pollAnswer.option_ids[0] === 0 ? 'Men' : 'Women';
-        await connection.getRepository(User).save(user);
     }
 }
 

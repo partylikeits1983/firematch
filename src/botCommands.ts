@@ -8,7 +8,7 @@ import {
     handleUserAge,
     handleUserBio,
     handleWriteUserLocation,
-} from './commands/setUpProfile';
+} from './commands/profile/setUpProfile';
 
 export function setupBotCommands(
     bot: Telegraf<Context>,
