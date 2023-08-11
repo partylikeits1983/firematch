@@ -1,7 +1,5 @@
-import { Context, Markup } from 'telegraf';
+import { Context } from 'telegraf';
 import { User } from '../../db-types/User';
-
-import { Polls } from './polls';
 
 import { getUser } from './getUser';
 import { handleGenderPoll } from './handleGenderPoll';

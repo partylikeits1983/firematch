@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Telegraf, Context } from 'telegraf';
+import { Telegraf } from 'telegraf';
 
 import 'reflect-metadata';
 

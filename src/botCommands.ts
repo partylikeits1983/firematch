@@ -2,9 +2,6 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
-// Get User Position
-import { handleGetUserPosition } from './commands/profile/handleGetUserPosition';
-
 import {
     updateProfile,
     handleUpdateProfile,
@@ -48,7 +45,6 @@ export function setupBotCommands(
     bot.command('share_location', async (ctx: Context) => {
         // ctx.reply(`share location command`);
         if (ctx.message?.from.id) {
-            // const pollsInstance = new Polls();
             await pollsInstance.sendShareLocationPoll(
                 ctx,
                 ctx.message?.from.id,
