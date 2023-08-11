@@ -5,8 +5,13 @@ import { Context } from 'telegraf';
 export async function handleReturnProfileUpdated(
     ctx: Context,
     connection: any,
+
 ) {
+    console.log("inside handle return profile updated");
+    console.log(ctx.message);
+
     // const user = await getUser(Number(ctx.message.from.user), connection);
 
+    
     console.log(ctx);
 }

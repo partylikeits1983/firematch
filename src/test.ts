@@ -6,9 +6,7 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 bot.start((ctx) => {
-    const keyboard = Markup.keyboard([
-        Markup.button.locationRequest('📍 Send location'),
-    ]).resize();
+    const keyboard = Markup.keyboard([Markup.button.locationRequest('📍 Send location')]).resize();
 
     ctx.reply('Share location', keyboard);
 });

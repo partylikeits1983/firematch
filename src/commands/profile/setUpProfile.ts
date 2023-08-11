@@ -33,9 +33,6 @@ export async function handleUserBio(ctx: Context, connection: any) {
         if (user && ctx.message && 'text' in ctx.message) {
             user.bio = ctx.message.text;
             await connection.getRepository(User).save(user);
-            
-            // pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
-            // ctx.reply('Share location for more precise matches?');
             return true;
         }
     }
@@ -88,12 +85,12 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             break;
         case 'Share location for more precise matches?':
             await handleGetUserPosition(ctx, connection);
-            await ctx.telegram.sendMessage(pollInfo.userId, "Your profile has been set!");    
-        default:
+            await ctx.telegram.sendMessage(pollInfo.userId, 'Your profile has been set!');
+
             await handleReturnProfileUpdated(ctx, pollInfo.userId);
+        default:
 
             console.log('Unknown poll type.');
             break;
     }
 }
-

@@ -3,21 +3,14 @@ import { Context } from 'telegraf';
 // import { User } from '../db-types/User';
 // import { getCurrentUnixTimestamp } from '../utils/unixTime';
 
-export async function handleMessage(
-    ctx: Context,
-    users: Set<number>,
-    connection: any,
-) {
+export async function handleMessage(ctx: Context, users: Set<number>, connection: any) {
     if (ctx.message && ctx.message.from && ctx.message.chat) {
         // Save user ID when they send a message to the bot
         users.add(ctx.message.from.id);
 
         if ('text' in ctx.message) {
             // Respond with a greeting
-            ctx.telegram.sendMessage(
-                ctx.message.chat.id,
-                `Hello ${ctx.message.from.first_name}`,
-            );
+            ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.message.from.first_name}`);
 
             ctx.telegram.sendPhoto(
                 ctx.message.chat.id, // Replace with the recipient's chat ID

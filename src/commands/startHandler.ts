@@ -31,11 +31,7 @@ async function handleNewUser(ctx: Context, connection: any) {
     }
 }
 
-export async function startHandler(
-    ctx: Context,
-    users: Set<number>,
-    connection: any,
-) {
+export async function startHandler(ctx: Context, users: Set<number>, connection: any) {
     if (ctx.message && ctx.message.from && ctx.message.chat) {
         await startMessage(ctx);
 

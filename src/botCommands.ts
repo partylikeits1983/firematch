@@ -8,18 +8,14 @@ import {
     handleUserAge,
     handleUserBio,
     handleWriteUserLocation,
-    handleUpdateProfileImage
+    handleUpdateProfileImage,
 } from './commands/profile/setUpProfile';
 
 import { Polls } from './commands/profile/polls';
 
 export const pollsInstance = new Polls();
 
-export function setupBotCommands(
-    bot: Telegraf<Context>,
-    users: Set<number>,
-    connection: any,
-) {
+export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, connection: any) {
     const userState: Map<number, string> = new Map();
 
     // COMMANDS
@@ -33,17 +29,14 @@ export function setupBotCommands(
 
     bot.command('create_profile', async (ctx: Context) => {
         if (ctx.message?.from.id) {
-
-        userState.set(ctx.message.from.id, 'setting_age');
-        await updateProfile(ctx);
+            userState.set(ctx.message.from.id, 'setting_age');
+            await updateProfile(ctx);
         }
     });
 
     bot.command('match', (ctx: Context) => ctx.reply(`Match command`));
 
-    bot.command('users', (ctx: Context) =>
-        ctx.reply(`Currently, there are ${users.size} users.`),
-    );
+    bot.command('users', (ctx: Context) => ctx.reply(`Currently, there are ${users.size} users.`));
 
     bot.command('data', (ctx: Context) => ctx.reply(`data command`));
 
@@ -52,10 +45,7 @@ export function setupBotCommands(
     bot.command('share_location', async (ctx: Context) => {
         // ctx.reply(`share location command`);
         if (ctx.message?.from.id) {
-            await pollsInstance.sendShareLocationPoll(
-                ctx,
-                ctx.message?.from.id,
-            );
+            await pollsInstance.sendShareLocationPoll(ctx, ctx.message?.from.id);
         }
     });
 
@@ -80,21 +70,17 @@ export function setupBotCommands(
                 }
             } else if (userState.get(ctx.message?.from?.id) === 'writing_bio') {
                 let success = await handleUserBio(ctx, connection);
-                console.log("HERE post bio")
 
                 if (success) {
                     userState.set(ctx.message.from.id, 'getting_location');
                     await pollsInstance.sendShareLocationPoll(ctx, ctx.message.from.id);
 
                     // ctx.telegram.sendMessage(ctx.message.from.id, "Your profile has been set!")
-                    // 
+                    //
                 } else {
                     // userState.set(ctx.message.from.id, 'getting_location');
                 }
-
-            } else if (
-                userState.get(ctx.message?.from?.id) === 'getting_location'
-            ) {
+            } else if (userState.get(ctx.message?.from?.id) === 'getting_location') {
             }
             // await handleUserLocation(ctx, connection);
         } else {
@@ -104,17 +90,15 @@ export function setupBotCommands(
 
     bot.command('cancel', (ctx: Context) => {
         if (ctx.message?.from.id) {
-        userState.set(ctx.message?.from.id, '');
+            userState.set(ctx.message?.from.id, '');
         }
     });
 
     bot.on('photo', async (ctx: Context) => {
         console.log('photo');
-        await ctx.reply("Your photo has been added to your profile!");
+        await ctx.reply('Your photo has been added to your profile!');
         handleUpdateProfileImage(ctx, connection);
     });
-    
-
 
     bot.on('location', async (ctx: Context) => {
         // Assert that ctx.message is of the required type

@@ -4,12 +4,9 @@ export class Polls {
     private pollsMap: Map<string, { type: string; userId: number }> = new Map();
 
     async sendGenderPoll(ctx: Context, userId: number) {
-        const poll = await ctx.telegram.sendPoll(
-            userId,
-            'Your Gender',
-            ['Male', 'Female'],
-            { is_anonymous: false },
-        );
+        const poll = await ctx.telegram.sendPoll(userId, 'Your Gender', ['Male', 'Female'], {
+            is_anonymous: false,
+        });
 
         if (poll) {
             this.pollsMap.set(poll.poll.id, {
@@ -26,7 +23,9 @@ export class Polls {
             userId,
             'Your preference (who you want to meet)',
             ['Guys', 'Girls'],
-            { is_anonymous: false },
+            {
+                is_anonymous: false,
+            },
         );
 
         if (poll) {
@@ -61,10 +60,7 @@ export class Polls {
     }
 
     async sendBioMessage(ctx: Context, userId: number) {
-        return await ctx.telegram.sendMessage(
-            userId,
-            'Write a short bio about yourself',
-        );
+        return await ctx.telegram.sendMessage(userId, 'Write a short bio about yourself');
     }
 
     getPollInfo(pollId: string): { type: string; userId: number } | undefined {
