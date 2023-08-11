@@ -1,11 +1,14 @@
 import { Context, Markup } from 'telegraf';
 import { User } from '../../db-types/User';
 
-import { Polls } from '../polls';
+import { Polls } from './polls';
 
 import { getUser } from './getUser';
 import { handleGenderPoll } from './handleGenderPoll';
 import { handlePreferencePoll } from './handlePreferencePoll';
+import { handleUserAge } from './handleUserAge';
+import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
+import { handleGetUserPosition } from './handleGetUserPosition';
 
 const pollsInstance = new Polls();
 
@@ -15,34 +18,6 @@ export async function updateProfile(ctx: Context) {
         await pollsInstance.sendGenderPoll(ctx, ctx.message.from.id);
     } else {
         console.error('Context message or message.from is undefined.');
-    }
-}
-
-function checkValidAge(age: number) {
-    if (age < 18) {
-        return false;
-    }
-    if (age > 100) {
-        return false;
-    }
-    return true;
-}
-
-export async function handleUserAge(ctx: Context, connection: any) {
-    if (ctx.message?.from.id && ctx.message) {
-        const user = await getUser(Number(ctx.message.from.id), connection);
-
-        if (user && ctx.message && 'text' in ctx.message) {
-            if (checkValidAge(Number(ctx.message.text))) {
-                user.age = Number(parseInt(String(ctx.message.text)));
-                await connection.getRepository(User).save(user);
-                ctx.reply('Write a short bio about yourself');
-                return true;
-            } else {
-                ctx.reply('Invalid Age (18-100)');
-                return false;
-            }
-        }
     }
 }
 
@@ -59,64 +34,6 @@ export async function handleUserBio(ctx: Context, connection: any) {
         }
     }
 }
-
-// pls edit this ...
-export async function handleGetUserPosition(ctx: Context, connection: any) {
-    if (!ctx.pollAnswer) {
-        console.log('No poll answer in context.');
-        return;
-    }
-    const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
-
-    if (user) {
-        user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
-
-        if (user.share_location) {
-            await connection.getRepository(User).save(user);
-
-            const keyboard = Markup.keyboard([
-                Markup.button.locationRequest('📍 Send location'),
-            ]).resize();
-    
-            ctx.telegram.sendMessage(
-                ctx.pollAnswer.user.id,
-                'Share location, or /skip_location_share',
-                keyboard,
-            );
-        } else {
-            ctx.telegram.sendMessage(
-                ctx.pollAnswer.user.id,
-                'You can share you location later by typing /share_location'
-            ); 
-        }
-
-
-    } else {
-        if (ctx.message?.from.id) {
-            const userId = Number(ctx.message.from.id);
-            const user = await getUser(userId, connection);
-
-            if (user) {
-                // moscow coordinates
-                const pointString = `(${55.7558}, ${37.6173})`;
-
-                user.geolocation = pointString;
-
-                await connection.getRepository(User).save(user);
-            }
-        }
-        // if no push location as Null
-    }
-}
-
-
-export async function handleReturnProfileUpdated(ctx: Context, connection: any) {
-    // const user = await getUser(Number(ctx.message.from.user), connection);
-
-    console.log(ctx);
-    
-}
-
 
 export async function handleWriteUserLocation(
     ctx: Context,
@@ -172,3 +89,5 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
             break;
     }
 }
+
+export { handleUserAge };

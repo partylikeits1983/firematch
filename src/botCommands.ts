@@ -93,7 +93,10 @@ export function setupBotCommands(
 
     bot.telegram.setMyCommands([
         { command: 'start', description: 'Start the bot' },
-        { command: 'skip_location_share', description: 'skip sharing location'},
+        {
+            command: 'skip_location_share',
+            description: 'skip sharing location',
+        },
         { command: 'match', description: 'Get sent matches' },
         {
             command: 'users',
