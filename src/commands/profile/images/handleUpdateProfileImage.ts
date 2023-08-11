@@ -4,13 +4,17 @@ import { getUser } from '../getUser';
 
 export async function handleUpdateProfileImage(ctx: Context, connection: any) {
     if (ctx.message && 'photo' in ctx.message && ctx.message.from?.id) {
-        console.log('Photo detected');
-
         const photoArray = ctx.message.photo;
 
         if (photoArray && photoArray.length > 0) {
             // Extract all fileIds from the photoArray
             const fileIds = photoArray.map(photo => photo.file_id);
+
+            // Deduplicate using a Set
+            const uniqueFileIds = [...new Set(fileIds)];
+
+            // Log unique fileIds
+            console.log('Unique File IDs:', uniqueFileIds);
 
             // Retrieve the user from the database
             const user = await getUser(Number(ctx.message.from.id), connection);

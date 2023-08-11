@@ -10,8 +10,8 @@ export async function getUserProfile(ctx: Context, connection: any, userId: numb
         return;
     }    
 
-    ctx.telegram.sendPhoto(
-        userId, // Replace with the recipient's chat ID
+    await ctx.telegram.sendPhoto(
+        userId,
         user?.photo_ids[0],
     );
 
