@@ -7,8 +7,9 @@ export async function handleUserAge(ctx: Context, connection: any) {
         const user = await getUser(Number(ctx.message.from.id), connection);
 
         if (user && ctx.message && 'text' in ctx.message) {
-            if (checkValidAge(Number(ctx.message.text))) {
-                user.age = Number(parseInt(String(ctx.message.text)));
+            const potentialAge = parseAge(ctx.message.text);
+            if (potentialAge !== null && checkValidAge(potentialAge)) {
+                user.age = potentialAge;
                 await connection.getRepository(User).save(user);
                 ctx.reply('Write a short bio about yourself');
                 return true;
@@ -21,11 +22,13 @@ export async function handleUserAge(ctx: Context, connection: any) {
 }
 
 function checkValidAge(age: number) {
-    if (age < 18) {
-        return false;
+    return age >= 18 && age <= 100;
+}
+
+function parseAge(text: string): number | null {
+    const potentialAge = parseInt(text);
+    if (!isNaN(potentialAge)) {
+        return potentialAge;
     }
-    if (age > 100) {
-        return false;
-    }
-    return true;
+    return null;
 }

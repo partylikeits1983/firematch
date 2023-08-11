@@ -1,6 +1,8 @@
 const nearbyCities: any = require('nearby-cities');
 
-export function getCityFromGeoLocation(geolocation: string): string | null {
+export function getCityFromGeoLocation(geolocation?: string): string {
+    if (!geolocation) return 'no location';
+
     const [latitude, longitude] = geolocation
         .replace(/[()]/g, '')
         .split(',')
@@ -10,5 +12,5 @@ export function getCityFromGeoLocation(geolocation: string): string | null {
 
     const query = { latitude, longitude };
     const cities = nearbyCities(query);
-    return cities && cities[0] ? cities[0].name : null;
+    return cities && cities[0] ? cities[0].name : 'no location';
 }

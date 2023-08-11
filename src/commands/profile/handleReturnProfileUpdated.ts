@@ -11,15 +11,15 @@ export async function handleReturnProfileUpdated(ctx: Context, connection: any, 
     if (user) {
         const locationString = getCityFromGeoLocation(user.geolocation);
 
-        const message = `
-Name: ${user.first_name}
+        const message = 
+            `Name: ${user.first_name}
 
-Gender: ${user.gender}
-Age: ${user.age}
-Preference: ${user.preference}
+            Gender: ${user.gender}
+            Age: ${user.age}
+            Preference: ${user.preference}
 
-Geolocation: ${locationString}
-Bio: ${user.bio}`;
+            Geolocation: ${locationString}
+            Bio: ${user.bio}`;
 
         await ctx.telegram.sendMessage(userId, message);
     } else {
