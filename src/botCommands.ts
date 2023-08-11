@@ -60,12 +60,11 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
     bot.command('skip_location_share', async (ctx: Context) => {
         if (ctx.message?.from.id) {
             userState.set(ctx.message?.from.id, '');
-            
+
             await ctx.sendMessage('Your profile has been set!');
             await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
         }
     });
-
 
     bot.command('update_bio', async (ctx: Context) => {
         if (ctx.message?.from.id) {
@@ -73,7 +72,7 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
             userState.set(ctx.message?.from.id, 'update_bio');
         }
 
-/*         if (userState.get(ctx.message?.from?.id) === 'update_bio') {}
+        /*         if (userState.get(ctx.message?.from?.id) === 'update_bio') {}
         await handleUserBio(ctx, connection);
 
         await ctx.sendMessage('Your bio has been updated!');
@@ -136,13 +135,10 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
                 await ctx.sendMessage('Your bio has been updated!');
                 await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
             }
-
-
         } else {
             handleMessage(ctx, users, connection);
         }
     });
-
 
     bot.telegram.setMyCommands([
         { command: 'start', description: 'Start the bot' },

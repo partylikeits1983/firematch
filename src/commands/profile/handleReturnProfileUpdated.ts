@@ -9,11 +9,6 @@ export async function handleReturnProfileUpdated(ctx: Context, connection: any, 
     await ctx.telegram.sendMessage(userId, "Here's your profile: ");
 
     if (user) {
-        console.log('user');
-        console.log(user);
-
-        console.log(getCityFromGeoLocation(user.geolocation));
-
         const locationString = getCityFromGeoLocation(user.geolocation);
 
         const message = `
