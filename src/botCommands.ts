@@ -10,6 +10,7 @@ import {
     handleWriteUserLocation,
     handleUpdateProfileImage,
     handleReturnProfileUpdated,
+    getUserProfile,
 } from './commands/profile/setUpProfile';
 
 import { Polls } from './commands/profile/polls';
@@ -63,6 +64,8 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
 
             await ctx.sendMessage('Your profile has been set!');
             await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
+
+            await ctx.sendMessage('Send pictures in the chat to update your profile pictures');
         }
     });
 
@@ -71,12 +74,14 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
             await ctx.sendMessage('Send you bio:');
             userState.set(ctx.message?.from.id, 'update_bio');
         }
+    });
 
-        /*         if (userState.get(ctx.message?.from?.id) === 'update_bio') {}
-        await handleUserBio(ctx, connection);
+    bot.command('my_profile', async (ctx: Context) => {
+        if (ctx.message?.from.id) {
 
-        await ctx.sendMessage('Your bio has been updated!');
-        await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id); */
+            await getUserProfile(ctx, connection, ctx.message.from.id); 
+
+        }
     });
 
     bot.command('cancel', (ctx: Context) => {
@@ -92,13 +97,9 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
     });
 
     bot.on('location', async (ctx: Context) => {
-        // Assert that ctx.message is of the required type
         const message = ctx.message as {
             location?: { latitude: number; longitude: number };
         };
-
-        console.log('in location');
-        console.log(ctx.message);
 
         if (message?.location && ctx.message?.from.id) {
             const userLocation = message.location;
@@ -109,6 +110,8 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
 
             await ctx.sendMessage('Your profile has been set!');
             await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
+
+            await ctx.sendMessage('Send pictures in the chat to update your profile pictures');
         }
     });
 
@@ -131,8 +134,7 @@ export function setupBotCommands(bot: Telegraf<Context>, users: Set<number>, con
                 }
             } else if (userState.get(ctx.message?.from?.id) === 'update_bio') {
                 await handleUserBio(ctx, connection);
-
-                await ctx.sendMessage('Your bio has been updated!');
+                
                 await handleReturnProfileUpdated(ctx, connection, ctx.message.from.id);
             }
         } else {
