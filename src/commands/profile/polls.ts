@@ -43,9 +43,12 @@ export class Polls {
         const poll = await ctx.telegram.sendPoll(
             userId,
             'Share location for more precise matches?',
-            ['Yes', 'No'],
+            ['Yes', 'No', 'Skip'],
             { is_anonymous: false },
         );
+
+        console.log("location");
+        console.log(poll);
 
         if (poll) {
             this.pollsMap.set(poll.poll.id, {
@@ -53,7 +56,10 @@ export class Polls {
                 userId: userId,
             });
         }
-        console.log('in poll');
+
+        console.log("FROM POLL MAP");
+        console.log(poll.poll.id);
+        console.log(this.getPollInfo(poll.poll.id))
 
         return poll;
     }

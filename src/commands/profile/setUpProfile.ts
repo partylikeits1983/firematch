@@ -10,7 +10,8 @@ import { handleUserAge } from './handleUserAge';
 import { handleReturnProfileUpdated } from './handleReturnProfileUpdated';
 import { handleGetUserPosition } from './handleGetUserPosition';
 
-const pollsInstance = new Polls();
+// const pollsInstance = new Polls();
+import { pollsInstance } from '../../botCommands';
 
 export async function updateProfile(ctx: Context) {
     ctx.reply('Lets set up your profile!');
@@ -63,6 +64,10 @@ export async function handleUpdateProfile(ctx: Context, connection: any) {
         console.log('No poll answer in context.');
         return;
     }
+
+    console.log("poll answer");
+    console.log(ctx.pollAnswer);
+
     const pollInfo = pollsInstance.getPollInfo(ctx.pollAnswer.poll_id);
 
     if (!pollInfo) {

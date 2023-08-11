@@ -2,6 +2,9 @@ import { Telegraf, Context } from 'telegraf';
 import { startHandler } from './commands/startHandler';
 import { handleMessage } from './commands/messageHandler';
 
+// Get User Position
+import { handleGetUserPosition } from './commands/profile/handleGetUserPosition';
+
 import {
     updateProfile,
     handleUpdateProfile,
@@ -9,6 +12,10 @@ import {
     handleUserBio,
     handleWriteUserLocation,
 } from './commands/profile/setUpProfile';
+
+import { Polls } from './commands/profile/polls';
+
+export const pollsInstance = new Polls();
 
 export function setupBotCommands(
     bot: Telegraf<Context>,
@@ -37,6 +44,19 @@ export function setupBotCommands(
     bot.command('data', (ctx: Context) => ctx.reply(`data command`));
 
     bot.help((ctx: Context) => ctx.reply('How can I help?'));
+
+
+    bot.command( 'share_location', async (ctx: Context) => {
+        // ctx.reply(`share location command`);
+        if (ctx.message?.from.id) {
+            // const pollsInstance = new Polls();
+            await pollsInstance.sendShareLocationPoll(ctx, ctx.message?.from.id);
+        }
+   });
+
+
+
+
 
     // POLL HANDLER
     bot.on('poll_answer', async (ctx: Context) => {

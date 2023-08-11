@@ -2,13 +2,22 @@ import { Context, Markup } from 'telegraf';
 import { User } from '../../db-types/User';
 import { getUser } from './getUser';
 
-// pls edit this ...
 export async function handleGetUserPosition(ctx: Context, connection: any) {
     if (!ctx.pollAnswer) {
-        console.log('No poll answer in context.');
+        console.log('missing data.');
         return;
     }
-    const user = await getUser(Number(ctx.pollAnswer.user.id), connection);
+
+    const userId = ctx.pollAnswer.user.id;
+    const user = await getUser(Number(userId), connection);
+
+    console.log(ctx.pollAnswer.option_ids);
+
+    // Check if the user selected skip
+    if (ctx.pollAnswer.option_ids[0] == 2) {
+        ctx.telegram.sendMessage(ctx.pollAnswer.user.id, "You can always share your location later with the command /share_location");
+        return; // Exit the function without further processing
+    }
 
     if (user) {
         user.share_location = ctx.pollAnswer.option_ids[0] === 0 ? true : false;
@@ -28,7 +37,7 @@ export async function handleGetUserPosition(ctx: Context, connection: any) {
         } else {
             ctx.telegram.sendMessage(
                 ctx.pollAnswer.user.id,
-                'You can share you location later by typing /share_location',
+                'You can share your location later by typing /share_location',
             );
         }
     } else {
