@@ -1,5 +1,9 @@
 # Firematch
 
+#### What is this? 
+This is a dating app bot for telegram. (not finished, it was a weekend project idea I had, maybe I'll finish it later)
+
+
 pnpm run dev
 
 npx prettier --write "src/**/*.ts"
